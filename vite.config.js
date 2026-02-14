@@ -33,6 +33,7 @@ export default defineConfig(() => {
                     assetFileNames: 'styles.css',
                 },
                 external: ['obsidian',
+                    'electron',
                     "codemirror",
                     "@codemirror/autocomplete",
                     "@codemirror/closebrackets",
