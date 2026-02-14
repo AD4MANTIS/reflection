@@ -1,14 +1,20 @@
 <script lang="ts">
-  import { MarkdownRenderer } from "obsidian";
+  import {
+    type FileView,
+    MarkdownRenderer,
+    type TFile,
+    type App,
+    Keymap,
+    type UserEvent,
+  } from "obsidian";
   import { onMount } from "svelte";
 
-  export let file;
+  export let file: TFile;
   export let title = file.basename;
-  export let index;
-  export let currentFile;
-  export let app: any;
-  export let view;
-  export let Keymap: any;
+  export let index: number;
+  export let currentFile: TFile;
+  export let app: App;
+  export let view: FileView;
 
   let content: string | null;
 
@@ -19,9 +25,10 @@
 
       try {
         await MarkdownRenderer.render(
+          app,
           markdown,
           markdownRenderWrapper,
-          currentFile,
+          currentFile.path,
           view,
         );
       } catch (error) {
@@ -33,15 +40,15 @@
     }
   }
 
-  function titleLookup(key) {
-    if (key === "1") {
+  function titleLookup(key: number) {
+    if (key === 1) {
       return "Last Year";
     }
 
     return `${key} years ago`;
   }
 
-  function titleClick($event) {
+  function titleClick($event: UserEvent) {
     openLink($event, file.path, currentFile.path);
   }
 
@@ -53,7 +60,7 @@
     }
   }
 
-  function openLink($event, href, filePath) {
+  function openLink($event: UserEvent, href: string, filePath: string) {
     const newPane = Keymap.isModEvent($event);
     app.workspace.openLinkText(href, filePath, newPane);
   }
