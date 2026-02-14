@@ -1,4 +1,4 @@
-import { Plugin, Keymap, moment } from 'obsidian';
+import { Plugin, Keymap, moment } from "obsidian";
 import ReflectionSection from "./ReflectionSection.svelte";
 import {
   getAllDailyNotes,
@@ -7,22 +7,22 @@ import {
   getWeeklyNote,
   getDateFromFile,
   getWeeklyNoteSettings,
-  getDailyNoteSettings
+  getDailyNoteSettings,
 } from "obsidian-daily-notes-interface";
 
 const noteCaches = {
-  'weekly': null,
-  'daily': null,
-}
+  weekly: null,
+  daily: null,
+};
 
 const periodicNotesSettings = {
-  'weekly': null,
-  'daily': null,
-}
+  weekly: null,
+  daily: null,
+};
 
-const reflectionClass = "reflection-container"
+const reflectionClass = "reflection-container";
 
-const leafRegistry = {}
+const leafRegistry = {};
 
 function removeElementsByClass(domNodeToSearch, className) {
   const elements = domNodeToSearch.getElementsByClassName(className);
@@ -43,14 +43,17 @@ export default class Reflection extends Plugin {
       await this.init();
     }
 
-    if (!this.doesLeafNeedUpdating(leaf)) { return false }
+    if (!this.doesLeafNeedUpdating(leaf)) {
+      return false;
+    }
 
-    const activeView = leaf.view
-    const activeFile = leaf.view.file
+    const activeView = leaf.view;
+    const activeFile = leaf.view.file;
 
-    if (activeView && activeFile) {  // The active view might not be a markdown view
-      this.setLeafRegistry(leaf)
-      this.renderContent(activeView, activeFile)
+    if (activeView && activeFile) {
+      // The active view might not be a markdown view
+      this.setLeafRegistry(leaf);
+      this.renderContent(activeView, activeFile);
     }
   }
 
@@ -59,28 +62,32 @@ export default class Reflection extends Plugin {
   }
 
   handleRegisterEvents() {
-    this.registerEvent(this.app.workspace.on('active-leaf-change', async (leaf) => {
-      this.runOnLeaf(leaf);
-    }));
+    this.registerEvent(
+      this.app.workspace.on("active-leaf-change", async (leaf) => {
+        this.runOnLeaf(leaf);
+      }),
+    );
 
-    this.registerEvent(this.app.workspace.on('window-open', async () => {
-      this.updateAllLeaves();
-    }));
+    this.registerEvent(
+      this.app.workspace.on("window-open", async () => {
+        this.updateAllLeaves();
+      }),
+    );
   }
 
   updateAllLeaves() {
     const { workspace } = this.app;
-    const leaves = workspace.getLeavesOfType('markdown')
+    const leaves = workspace.getLeavesOfType("markdown");
 
-    leaves.forEach(l => this.runOnLeaf(l));
+    leaves.forEach((l) => this.runOnLeaf(l));
   }
 
   doesLeafNeedUpdating(leaf) {
-    return (leafRegistry[leaf.id] == leaf.view?.file?.path) ? false : true;
+    return leafRegistry[leaf.id] == leaf.view?.file?.path ? false : true;
   }
 
   removeContentFromFrame(container) {
-    removeElementsByClass(container, reflectionClass)
+    removeElementsByClass(container, reflectionClass);
   }
 
   async addComponentToFrame(view, editor, currentFile, fileType) {
@@ -91,29 +98,36 @@ export default class Reflection extends Plugin {
       view,
       title: "No Previous Notes",
       plugin: this,
-      Keymap: Keymap
+      Keymap: Keymap,
     };
 
-    const div = document.createElement('div');
-    div.classList.add(reflectionClass)
+    const div = document.createElement("div");
+    div.classList.add(reflectionClass);
 
-    const parentContainer = editor.containerEl.querySelector('.cm-sizer');
-    const contentContainer = editor.containerEl.querySelector('.cm-contentContainer');
-    const embeddedLinksContainer = parentContainer.querySelector('.embedded-backlinks');
+    const parentContainer = editor.containerEl.querySelector(".cm-sizer");
+    const contentContainer = editor.containerEl.querySelector(
+      ".cm-contentContainer",
+    );
+    const embeddedLinksContainer = parentContainer.querySelector(
+      ".embedded-backlinks",
+    );
     // const contentContainer = editor.containerEl.querySelector('.cm-active');
 
     // We should remove the existing one first
-    removeElementsByClass(parentContainer, reflectionClass)
+    removeElementsByClass(parentContainer, reflectionClass);
 
     if (embeddedLinksContainer) {
-      embeddedLinksContainer.parentNode.insertBefore(div, embeddedLinksContainer)
+      embeddedLinksContainer.parentNode.insertBefore(
+        div,
+        embeddedLinksContainer,
+      );
     } else {
-      insertAfter(contentContainer, div)
+      insertAfter(contentContainer, div);
     }
 
     new ReflectionSection({
       target: div,
-      props: props
+      props: props,
     });
   }
 
@@ -140,10 +154,16 @@ export default class Reflection extends Plugin {
 
     switch (fileType) {
       case "daily":
-        lastTimeFile = getDailyNote(moment(getDateFromFile(file, "day")).subtract(1, "years"), noteCaches.daily)
+        lastTimeFile = getDailyNote(
+          moment(getDateFromFile(file, "day")).subtract(1, "years"),
+          noteCaches.daily,
+        );
         break;
       case "weekly":
-        lastTimeFile = getWeeklyNote(moment(getDateFromFile(file, "week")).subtract(1, "years"), noteCaches.weekly);
+        lastTimeFile = getWeeklyNote(
+          moment(getDateFromFile(file, "week")).subtract(1, "years"),
+          noteCaches.weekly,
+        );
         break;
       default:
         return;
@@ -165,7 +185,7 @@ export default class Reflection extends Plugin {
         files = this._getFilesFromPreviousPeriods(file, fileType);
         break;
       default:
-        throw 'Unknown File Type'
+        throw "Unknown File Type";
     }
 
     return files;
@@ -177,15 +197,21 @@ export default class Reflection extends Plugin {
 
     switch (fileType) {
       case "daily":
-        unit = 'day'
+        unit = "day";
         location = noteCaches.daily;
-        return getDailyNote(moment(getDateFromFile(file, unit)).subtract(lookback, "years"), location)
+        return getDailyNote(
+          moment(getDateFromFile(file, unit)).subtract(lookback, "years"),
+          location,
+        );
       case "weekly":
-        unit = 'week'
+        unit = "week";
         location = noteCaches.weekly;
-        return getWeeklyNote(moment(getDateFromFile(file, unit)).subtract(lookback, "years"), location)
+        return getWeeklyNote(
+          moment(getDateFromFile(file, unit)).subtract(lookback, "years"),
+          location,
+        );
       default:
-        throw 'Unknown File Type'
+        throw "Unknown File Type";
     }
   }
 
@@ -199,7 +225,7 @@ export default class Reflection extends Plugin {
     const checkLength = 5;
 
     while (i <= checkLength) {
-      files[i] = this._getFileFromPreviousPeriod(file, fileType, i)
+      files[i] = this._getFileFromPreviousPeriod(file, fileType, i);
 
       i++;
     }
@@ -209,11 +235,11 @@ export default class Reflection extends Plugin {
 
   getTypeOfFile(file) {
     if (file.parent.path.includes(periodicNotesSettings.daily.folder)) {
-      return "daily"
+      return "daily";
     }
 
     if (file.parent.path.includes(periodicNotesSettings.weekly.folder)) {
-      return "weekly"
+      return "weekly";
     }
     return;
   }
@@ -224,9 +250,11 @@ export default class Reflection extends Plugin {
     this.removeContentFromFrame(editor.containerEl);
 
     const fileType = this.getTypeOfFile(file);
-    if (!noteCaches[fileType]) { return false }
+    if (!noteCaches[fileType]) {
+      return false;
+    }
 
-    this.addComponentToFrame(view, editor, file, fileType)
+    this.addComponentToFrame(view, editor, file, fileType);
   }
 
   async init() {
@@ -248,7 +276,5 @@ export default class Reflection extends Plugin {
     this.updateAllLeaves();
   }
 
-  onunload() {
-
-  }
+  onunload() {}
 }

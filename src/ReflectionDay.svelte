@@ -1,6 +1,6 @@
 <script lang="ts">
-  import { MarkdownRenderer } from 'obsidian';
-  import { onMount } from 'svelte';
+  import { MarkdownRenderer } from "obsidian";
+  import { onMount } from "svelte";
 
   export let file;
   export let title = file.basename;
@@ -15,10 +15,15 @@
   async function onInit() {
     if (file) {
       const markdown = await app.vault.read(file);
-      const markdownRenderWrapper = document.createElement('div');
+      const markdownRenderWrapper = document.createElement("div");
 
       try {
-        await MarkdownRenderer.renderMarkdown(markdown, markdownRenderWrapper, currentFile, view);
+        await MarkdownRenderer.render(
+          markdown,
+          markdownRenderWrapper,
+          currentFile,
+          view,
+        );
       } catch (error) {
         // Likely Markdown Error from other plugins
       }
@@ -30,32 +35,32 @@
 
   function titleLookup(key) {
     if (key === "1") {
-      return "Last Year"
+      return "Last Year";
     }
 
-    return `${key} years ago`
+    return `${key} years ago`;
   }
 
   function titleClick($event) {
-    openLink($event, file.path, currentFile.path)
+    openLink($event, file.path, currentFile.path);
   }
 
   function bodyClick($event) {
-    let href = $event.target?.dataset?.href
+    let href = $event.target?.dataset?.href;
 
     if (href) {
-      openLink($event, href, currentFile.path)
+      openLink($event, href, currentFile.path);
     }
   }
 
   function openLink($event, href, filePath) {
     const newPane = Keymap.isModEvent($event);
-    app.workspace.openLinkText(href, filePath, newPane)
+    app.workspace.openLinkText(href, filePath, newPane);
   }
 
   onMount(async () => {
-    await onInit()
-  })
+    await onInit();
+  });
 </script>
 
 <div class="reflection-day">
@@ -64,7 +69,9 @@
       <span>{titleLookup(index)}</span>
     </div>
     {#if content}
-      <div on:click={bodyClick} class="reflection-day__body">{@html content}</div>
+      <div on:click={bodyClick} class="reflection-day__body">
+        {@html content}
+      </div>
     {:else}
       <div class="reflection-day__body">This file is empty</div>
     {/if}
@@ -89,7 +96,7 @@
   :global(.reflection-container) {
     max-width: var(--max-width);
     width: var(--line-width);
-    margin-inline: var(--content-margin)!important;
+    margin-inline: var(--content-margin) !important;
   }
 
   .reflection-day {
