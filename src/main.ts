@@ -244,6 +244,7 @@ export default class Reflection extends Plugin implements GlobalPlugin {
       await this.establishNoteCaches();
       await this.gatherPeriodicNoteSettings();
       this.ready = true;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (e) {
       // Dependencies not yet ready
     }
