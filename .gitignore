@@ -1,5 +1,5 @@
 # vscode
-.vscode
+.vscode 
 
 # Intellij
 *.iml
@@ -10,7 +10,6 @@ node_modules
 
 # Don't include the compiled main.js file in the repo.
 # They should be uploaded to GitHub releases instead.
-# Same for styles.css
 main.js
 styles.css
 
@@ -22,4 +21,3 @@ data.json
 
 # Exclude macOS Finder (System Explorer) View States
 .DS_Store
-.git.old

@@ -1,7 +1,7 @@
 {
 	"id": "reflection",
 	"name": "Reflection",
-	"version": "1.0.2",
+	"version": "1.1.0-ad4mantis",
 	"minAppVersion": "0.15.0",
 	"description": "Shows daily and weekly notes from this day in years past.",
 	"author": "Brandon Boswell",

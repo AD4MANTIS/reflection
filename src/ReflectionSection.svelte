@@ -2,13 +2,22 @@
   import type { FileView, TFile, App } from "obsidian";
   import ReflectionDay from "./ReflectionDay.svelte";
   import type { FileType, GlobalPlugin } from "./models";
-  export let currentFile: TFile;
-  export let fileType: FileType;
-  export let app: App;
-  export let view: FileView;
-  export let plugin: GlobalPlugin;
 
-  let files = plugin.getFilesFromLastTime(currentFile, fileType);
+  let {
+    currentFile,
+    fileType,
+    app,
+    view,
+    plugin,
+  }: {
+    currentFile: TFile;
+    fileType: FileType;
+    app: App;
+    view: FileView;
+    plugin: GlobalPlugin;
+  } = $props();
+
+  let files = $derived(plugin.getFilesFromLastTime(currentFile, fileType));
 </script>
 
 <div>

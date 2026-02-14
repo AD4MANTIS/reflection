@@ -7,16 +7,18 @@
     Keymap,
     type UserEvent,
   } from "obsidian";
-  import { onMount } from "svelte";
 
-  export let file: TFile;
-  export let title = file.basename;
-  export let index: number;
-  export let currentFile: TFile;
-  export let app: App;
-  export let view: FileView;
+  type Props = {
+    file: TFile;
+    index: number;
+    currentFile: TFile;
+    app: App;
+    view: FileView;
+  };
 
-  let content: string | null;
+  const { file, index, currentFile, app, view }: Props = $props();
+
+  let content = $state<string | null>(null);
 
   async function onInit() {
     if (file) {
@@ -35,7 +37,6 @@
         // Likely Markdown Error from other plugins
       }
 
-      title = file.basename;
       content = markdownRenderWrapper.innerHTML;
     }
   }
@@ -52,8 +53,8 @@
     openLink($event, file.path, currentFile.path);
   }
 
-  function bodyClick($event) {
-    let href = $event.target?.dataset?.href;
+  function bodyClick($event: MouseEvent) {
+    let href = ($event.target as any)?.dataset?.href;
 
     if (href) {
       openLink($event, href, currentFile.path);
@@ -65,8 +66,8 @@
     app.workspace.openLinkText(href, filePath, newPane);
   }
 
-  onMount(async () => {
-    await onInit();
+  $effect(() => {
+    onInit();
   });
 </script>
 
