@@ -6,7 +6,7 @@ import { defineConfig } from "eslint/config";
 export default defineConfig([
   js.configs.recommended,
   tseslint.configs.strictTypeChecked,
-  // svelte.configs.all,
+  svelte.configs.all,
   {
     ignores: [
       "node_modules",
