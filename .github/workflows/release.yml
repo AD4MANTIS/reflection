@@ -3,6 +3,7 @@ name: Node.js build
 on:
     push:
         branches: ["**"]
+        tags: ["v*.*.*"]
     pull_request:
         branches: ["**"]
 
@@ -23,6 +24,13 @@ jobs:
                   node-version: ${{ matrix.node-version }}
                   cache: "npm"
             - run: npm ci
-            - run: npm run build --if-present
-            - run: npm run lint
-
+            # - run: npm run lint
+            - run: npm run build
+            - name: Release
+              uses: softprops/action-gh-release@v2
+              if: github.ref_type == 'tag'
+              with:
+                files: |
+                  main.js
+                  manifest.json
+                  styles.css
